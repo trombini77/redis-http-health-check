@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  redis-status:
+    image: trombini77/redis-http-health-check:latest
+    container_name: redis-status-check
+    restart: always
+    environment:
+      TZ: 'America/Sao_Paulo'
+    command: ./redis-http-health-check -h=hostname -p=6379 -P=password
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ps|grep redis-http-health-check|grep -v grep
+      interval: 10s
+      timeout: 15s
+      retries: 10
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1M"
+        max-file: "10"
